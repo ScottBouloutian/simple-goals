@@ -1,13 +1,25 @@
 const Simple = require('./lib/Simple');
-const config = require('./bills.json');
 const moment = require('moment');
 const Promise = require('bluebird');
+const aws = require('aws-sdk');
 require('moment-recur');
 
+const s3 = new aws.S3({ region: 'us-east-1' });
+const getObject = Promise.promisify(s3.getObject, { context: s3 });
+const bucket = process.env.SIMPLE_GOALS_BUCKET;
 const options = {
     username: process.env.SIMPLE_GOALS_USERNAME,
     password: process.env.SIMPLE_GOALS_PASSWORD,
 };
+const simple = new Simple(options);
+
+// Download the configuration from s3
+function downloadConfig() {
+    return getObject({
+        Bucket: bucket,
+        Key: 'simple-goals/config.json',
+    }).then(body => JSON.parse(body.Body));
+}
 
 // Converts bills into Simple goals
 function getGoalsFromBills(bills) {
@@ -27,10 +39,11 @@ function getGoalsFromBills(bills) {
 }
 
 // Updates Simple goals with ones for the bills
-const simple = new Simple(options);
-simple.login()
-.then(() => simple.goals())
-.then((goals) => {
+Promise.all([
+    downloadConfig(),
+    simple.login().then(() => simple.goals()),
+])
+.then(([config, goals]) => {
     console.log(`There are currently ${goals.length} goals in Simple`);
     const billGoals = getGoalsFromBills(config.bills)
         .filter(billGoal => (
