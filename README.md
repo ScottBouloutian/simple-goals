@@ -1,2 +1,2 @@
 # simple-goals
-Setup recurring bills as goals in Simple 💸
+💸 Setup recurring bills as goals in Simple
