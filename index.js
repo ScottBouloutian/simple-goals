@@ -5,7 +5,7 @@ const Promise = require('bluebird');
 require('moment-recur');
 
 const options = {
-    username: process.evv.SIMPLE_GOALS_USERNAME,
+    username: process.env.SIMPLE_GOALS_USERNAME,
     password: process.env.SIMPLE_GOALS_PASSWORD,
 };
 
@@ -19,7 +19,7 @@ function getGoalsFromBills(bills) {
         return {
             name,
             description,
-            amount: bill.amount * 10000,
+            amount: Math.round(bill.amount * 10000),
             start: Date.now(),
             finish,
         };
@@ -28,7 +28,10 @@ function getGoalsFromBills(bills) {
 
 // Updates Simple goals with ones for the bills
 const simple = new Simple(options);
-simple.login().then(() => simple.goals()).then((goals) => {
+simple.login()
+.then(() => simple.goals())
+.then((goals) => {
+    console.log(`There are currently ${goals.length} goals in Simple`);
     const billGoals = getGoalsFromBills(config.bills)
         .filter(billGoal => (
             !goals.some(goal => (
@@ -36,5 +39,8 @@ simple.login().then(() => simple.goals()).then((goals) => {
                 Math.abs(moment(billGoal.finish).diff(goal.finish, 'hours')) < 24
             ))
         ));
+    console.log(`There are ${billGoals.length} goals that need to be added`);
     return Promise.map(billGoals, goal => simple.setGoal(goal), { concurrency: 3 });
-}).catch(error => console.error(error));
+})
+.then(() => console.log('Simple goals have been updated'))
+.catch(error => console.error(error));
