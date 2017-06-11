@@ -6,7 +6,6 @@
     "node": "v6.10.0"
   },
   "scripts": {
-    "start": "node index",
     "build": "sh scripts/lambda-build.sh"
   },
   "repository": "git@github.com:ScottBouloutian/simple-goals.git",

@@ -10,6 +10,7 @@ const bucket = process.env.SIMPLE_GOALS_BUCKET;
 const options = {
     username: process.env.SIMPLE_GOALS_USERNAME,
     password: process.env.SIMPLE_GOALS_PASSWORD,
+    sfst: process.env.SIMPLE_GOALS_SFST,
 };
 const simple = new Simple(options);
 
@@ -39,7 +40,7 @@ function getGoalsFromBills(bills) {
 }
 
 // Updates Simple goals with ones for the bills
-function updateGoals() {
+function updateGoals(event, context, callback) {
     Promise.all([
         downloadConfig(),
         simple.login().then(() => simple.goals()),
@@ -54,10 +55,13 @@ function updateGoals() {
                 ))
             ));
         console.log(`There are ${billGoals.length} goals that need to be added`);
-        return Promise.map(billGoals, goal => simple.setGoal(goal), { concurrency: 3 });
+        return Promise.map(billGoals, goal => simple.setGoal(goal), { concurrency: 1 });
     })
-    .then(() => console.log('Simple goals have been updated'))
-    .catch(error => console.error(error));
+    .then(() => {
+        console.log('Simple goals have been updated');
+        callback();
+    })
+    .catch(error => callback(error));
 }
 
 module.exports = { updateGoals };

@@ -3,7 +3,7 @@
 # Build the zip file
 mkdir -p build
 rm -r build/*
-cp -r package.json index.js lib build
+cp -r package.json yarn.lock .yarnclean index.js lib build
 (
     cd build;
     yarn --production;
