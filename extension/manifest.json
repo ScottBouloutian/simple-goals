@@ -1,0 +1,18 @@
+{
+    "name" : "Simple Cookie Finder",
+    "version" : "0.1",
+    "description" : "Desplays a cookie needed for the simple-goals script to run.",
+    "permissions": ["cookies", "tabs", "https://signin.simple.com/"],
+    "icons": {
+        "16": "cookie.png",
+        "48": "cookie.png",
+        "128": "cookie.png"
+    },
+    "browser_action": {
+        "default_icon": "cookie.png"
+    },
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "manifest_version": 2
+}
