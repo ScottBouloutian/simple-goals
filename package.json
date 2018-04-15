@@ -2,11 +2,9 @@
   "name": "simple-goals",
   "version": "1.0.0",
   "main": "index.js",
-  "engines": {
-    "node": "v6.10.3"
-  },
   "scripts": {
-    "build": "sh scripts/lambda-build.sh"
+    "build": "sh scripts/lambda-build.sh",
+    "lint": "eslint ."
   },
   "repository": "git@github.com:ScottBouloutian/simple-goals.git",
   "author": "Scott Bouloutian <ScottBouloutian@gmail.com>",
@@ -20,9 +18,8 @@
     "request": "^2.81.0"
   },
   "devDependencies": {
-    "eslint": "^3.18.0",
-    "eslint-config-airbnb-base": "^11.1.2",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-node": "^4.2.1"
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.11.0"
   }
 }

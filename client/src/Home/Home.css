@@ -1,0 +1,10 @@
+.page {
+    background-color: #ecf0f1;
+    height: 100vh;
+}
+
+.bills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}

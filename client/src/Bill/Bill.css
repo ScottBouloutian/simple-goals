@@ -1,0 +1,22 @@
+.bill {
+    display: block;
+    height: 350px;
+    width: 300px;
+    margin: 20px;
+    textAlign: 'center';
+    padding: 4px;
+}
+
+label {
+    display: inline-block;
+    font-size: 12px;
+    width: 100%;
+}
+
+.row {
+    display: flex;
+}
+
+.half {
+    flex-basis: 50%;
+}

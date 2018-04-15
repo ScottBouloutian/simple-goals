@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+
 const Simple = require('./lib/Simple');
 const moment = require('moment');
 const Promise = require('bluebird');
@@ -45,23 +47,23 @@ function updateGoals(event, context, callback) {
         downloadConfig(),
         simple.login().then(() => simple.goals()),
     ])
-    .then(([config, goals]) => {
-        console.log(`There are currently ${goals.length} goals in Simple`);
-        const billGoals = getGoalsFromBills(config.bills)
-            .filter(billGoal => (
-                !goals.some(goal => (
-                    billGoal.name === goal.name &&
-                    Math.abs(moment(billGoal.finish).diff(goal.finish, 'hours')) < 24
-                ))
-            ));
-        console.log(`There are ${billGoals.length} goals that need to be added`);
-        return Promise.map(billGoals, goal => simple.setGoal(goal), { concurrency: 1 });
-    })
-    .then(() => {
-        console.log('Simple goals have been updated');
-        callback();
-    })
-    .catch(error => callback(error));
+        .then(([config, goals]) => {
+            console.log(`There are currently ${goals.length} goals in Simple`);
+            const billGoals = getGoalsFromBills(config.bills)
+                .filter(billGoal => (
+                    !goals.some(goal => (
+                        billGoal.name === goal.name &&
+                        Math.abs(moment(billGoal.finish).diff(goal.finish, 'hours')) < 24
+                    ))
+                ));
+            console.log(`There are ${billGoals.length} goals that need to be added`);
+            return Promise.map(billGoals, goal => simple.setGoal(goal), { concurrency: 1 });
+        })
+        .then(() => {
+            console.log('Simple goals have been updated');
+            callback();
+        })
+        .catch(error => callback(error));
 }
 
 module.exports = { updateGoals };
