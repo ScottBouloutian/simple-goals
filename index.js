@@ -30,13 +30,14 @@ function getGoalsFromBills(bills) {
         const recurring = moment(bill.date, 'MM-DD-YYYY').recur().every(...bill.recur);
         const dates = recurring.fromDate(Date.now()).next(1, 'x');
         const finish = Number(dates[0]);
-        const { name, description } = bill;
+        const { name, description, categories } = bill;
         return {
             name,
             description,
             amount: Math.round(bill.amount * 10000),
             start: Date.now(),
             finish,
+            categories,
         };
     });
 }
