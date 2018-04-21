@@ -7,15 +7,24 @@ import Home from '../Home';
 
 injectTapEventPlugin();
 
+function getPath(path) {
+    const baseUrl = process.env.PUBLIC_URL;
+    return `${baseUrl}${path}`;
+}
+
 const App = () => (
     <MuiThemeProvider>
         <Router>
             <div>
-                <Route exact path="/" render={() => <Redirect to="/login" />} />
-                <Route path="/login" component={Login} />
                 <Route
-                  path="/home"
-                  render={() => (sessionStorage.getItem('token') ? <Home /> : <Redirect to="/login" />)}
+                  exact
+                  path={getPath('/')}
+                  render={() => <Redirect to={getPath('/login')} />}
+                />
+                <Route path={getPath('/login')} component={Login} />
+                <Route
+                  path={getPath('/home')}
+                  render={() => (sessionStorage.getItem('token') ? <Home /> : <Redirect to={getPath('/login')} />)}
                 />
             </div>
         </Router>
