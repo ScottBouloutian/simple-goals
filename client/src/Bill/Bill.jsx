@@ -34,7 +34,7 @@ const defaultState = {
     recurType: 'month',
     folders,
     folderId,
-    category: _.first(categories),
+    categoryId: _.first(categories).categoryId,
     categories: _.filter(categories, ['folderId', folderId]),
 };
 
@@ -46,6 +46,7 @@ class Bill extends Component {
 
     componentWillMount() {
         const { bill } = this.props;
+        const category = _.get(bill, 'categories[0]', _.first(categories));
         const updatedState = _.defaults({
             id: bill.id,
             name: bill.name,
@@ -54,12 +55,15 @@ class Bill extends Component {
             date: bill.date ? new Date(bill.date) : undefined,
             recurValue: bill.recur ? bill.recur[0] : undefined,
             recurType: bill.recur ? bill.recur[1] : undefined,
-            category: bill.categories ? _.first(bill.categories) : null,
+            folderId: category.folderId,
+            categories: _.filter(categories, ['folderId', category.folderId]),
+            categoryId: category.categoryId,
         }, defaultState);
         this.setState(updatedState);
     }
 
     componentDidUpdate() {
+        const category = _.find(categories, ['categoryId', this.state.categoryId]);
         const bill = {
             id: this.state.id,
             name: this.state.name,
@@ -67,7 +71,7 @@ class Bill extends Component {
             amount: this.state.amount,
             date: moment(this.state.date).format('MM-DD-YYYY'),
             recur: [this.state.recurValue, this.state.recurType],
-            categories: [this.state.category],
+            categories: [category],
         };
         this.props.onChange(bill);
     }
@@ -86,7 +90,7 @@ class Bill extends Component {
         return _.map(this.state.categories, category => (
             <MenuItem
               key={category.categoryId}
-              value={category}
+              value={category.categoryId}
               primaryText={category.categoryName}
             />
         ));
@@ -104,10 +108,16 @@ class Bill extends Component {
             this.setState({
                 folderId: id,
                 categories: categoryChoices,
-                category: _.first(categoryChoices),
+                categoryId: _.first(categoryChoices).categoryId,
             });
         };
-        const categoryChanged = (event, key, category) => this.setState({ category });
+        const categoryChanged = (event, key, id) => {
+            const category = _.find(categories, ['categoryId', id]);
+            this.setState({
+                categoryId: id,
+                folderId: category.folderId,
+            });
+        };
         const deleteClicked = () => this.props.onDelete();
         return (
             <Paper className="bill" zDepth={2}>
@@ -184,11 +194,14 @@ class Bill extends Component {
                         <DropDownMenu
                           value={this.state.folderId}
                           onChange={folderChanged}
-                          autoWidth={false}
                         >
                             {this.getFolderMenuItems()}
                         </DropDownMenu>
-                        <DropDownMenu id="category" value={this.state.category} onChange={categoryChanged}>
+                        <DropDownMenu
+                          id="category"
+                          value={this.state.categoryId}
+                          onChange={categoryChanged}
+                        >
                             {this.getCategoryMenuItems()}
                         </DropDownMenu>
                     </label>

@@ -28,7 +28,7 @@ class Login extends Component {
             this.cognito.setNewPassword(password).subscribe(
                 noop,
                 error => this.setState({ error }),
-                () => history.replace('/home'),
+                () => history.replace(`${process.env.PUBLIC_URL}/home`),
             );
         } else {
             this.setState({
@@ -44,7 +44,7 @@ class Login extends Component {
             switch (event.type) {
             case AUTHENTICATE_USER_SUCCESS:
                 sessionStorage.setItem('token', event.token);
-                history.replace('/home');
+                history.replace(`${process.env.PUBLIC_URL}/home`);
                 break;
             case NEW_PASSWORD_REQUIRED:
                 this.setState({
