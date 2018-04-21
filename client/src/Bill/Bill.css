@@ -1,13 +1,21 @@
 .bill {
     display: block;
-    height: 350px;
     width: 300px;
     margin: 20px;
     textAlign: 'center';
-    padding: 4px;
+    padding: 16px;
+    position: relative;
+}
+
+.delete {
+    cursor: pointer;
+    position: absolute;
+    right: 8px;
+    top: 8px;
 }
 
 label {
+    color: rgb(0, 188, 212);
     display: inline-block;
     font-size: 12px;
     width: 100%;
@@ -19,4 +27,9 @@ label {
 
 .half {
     flex-basis: 50%;
+}
+
+.category label {
+    display: flex;
+    flex-direction: column;
 }

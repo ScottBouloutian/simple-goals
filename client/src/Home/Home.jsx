@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import AWS from 'aws-sdk';
 import Snackbar from 'material-ui/Snackbar';
 import AppBar from 'material-ui/AppBar';
-import FlatButton from 'material-ui/FlatButton';
-import { map, cloneDeep, pullAt } from 'lodash';
+import IconButton from 'material-ui/IconButton';
+import * as _ from 'lodash';
 import uuid from 'uuid/v1';
+import ContentSave from 'material-ui/svg-icons/content/save';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import { userPoolId, identityPoolId } from '../Cognito';
 import Bill from '../Bill';
 
@@ -61,42 +63,52 @@ class Home extends Component {
 
     renderBills() {
         const { bills } = this.state;
-        return map(bills, (bill, index) => {
+        return _.map(bills, (bill, index) => {
             const onDelete = () => {
-                const billsClone = cloneDeep(bills);
-                pullAt(billsClone, index);
+                const billsClone = _.cloneDeep(bills);
+                _.pullAt(billsClone, index);
                 this.setState({
                     bills: billsClone,
-                }, () => this.uploadBills());
+                });
             };
-            const onSave = (updatedBill) => {
-                const billsClone = cloneDeep(bills);
-                billsClone[index] = updatedBill;
-                this.setState({
-                    bills: billsClone,
-                }, () => this.uploadBills());
-            };
+            const billChanged = updatedBill => _.assign(bills[index], updatedBill);
             return (
-                <Bill key={bill.id} bill={bill} onSave={onSave} onDelete={onDelete} />
+                <Bill key={bill.id} bill={bill} onDelete={onDelete} onChange={billChanged} />
             );
         });
     }
 
-    render() {
-        const { error, bills } = this.state;
-        const handleRequestClose = () => this.setState({ error: null });
+    renderAddButton() {
+        const { bills } = this.state;
         const addClicked = () => {
-            const billsClone = cloneDeep(bills);
+            const billsClone = _.cloneDeep(bills);
             billsClone.push({ id: uuid() });
             this.setState({ bills: billsClone });
         };
-        const addButton = (<FlatButton label="Add" onClick={addClicked} />);
+        return (
+            <IconButton onClick={addClicked}>
+                <ContentAdd />
+            </IconButton>
+        );
+    }
+
+    renderSaveButton() {
+        return (
+            <IconButton onClick={() => this.uploadBills()}>
+                <ContentSave />
+            </IconButton>
+        );
+    }
+
+    render() {
+        const { error } = this.state;
+        const handleRequestClose = () => this.setState({ error: null });
         return (
             <div className="page">
                 <AppBar
                   title="Bills"
-                  showMenuIconButton={false}
-                  iconElementRight={addButton}
+                  iconElementLeft={this.renderAddButton()}
+                  iconElementRight={this.renderSaveButton()}
                 />
                 <div className="bills">
                     {this.renderBills()}
