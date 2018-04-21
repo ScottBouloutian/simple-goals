@@ -1,8 +1,8 @@
 {
-  "name": "s3-json-edit",
+  "name": "simple-goals",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://scottbouloutian.github.io/s3-json-edit",
+  "homepage": "https://scottbouloutian.github.io/simple-goals",
   "dependencies": {
     "amazon-cognito-identity-js": "^1.19.0",
     "aws-sdk": "^2.94.0",
