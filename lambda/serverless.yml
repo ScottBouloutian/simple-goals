@@ -1,0 +1,7 @@
+service: simple-goals
+provider:
+  name: aws
+  runtime: nodejs8.10
+functions:
+  simple-goals:
+    handler: handler.updateGoals        

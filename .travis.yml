@@ -1,7 +1,7 @@
 language: node_js
 install:
-    - yarn
+    - (cd lambda; yarn)
     - (cd client; yarn)
 script:
-    - yarn lint
+    - (cd lambda; yarn lint)
     - (cd client; yarn lint)
