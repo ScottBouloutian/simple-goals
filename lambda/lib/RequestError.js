@@ -1,6 +1,6 @@
 class RequestError extends Error {
     constructor(code, body) {
-        super(`code ${code}`);
+        super(`code ${code}: ${JSON.stringify(body)}`);
         this.code = code;
         this.body = body;
     }
